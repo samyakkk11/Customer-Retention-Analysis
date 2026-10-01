@@ -1,0 +1,6 @@
+@"
+__pycache__/
+*.pyc
+data/rfm_output.csv
+data/ecommerce_customer_behavior_2026.csv
+"@ | Out-File -Encoding ascii .gitignore
