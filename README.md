@@ -2,11 +2,15 @@
 
 **Python (pandas, SciPy, scikit-learn) + Power BI (DAX, What-If parameters)**
 
+![Home](screenshots/Home.png)
+
 ## Business summary
 
 An online store has 100,000 registered customers, but only 30.6% have ever bought anything, and 44.6% of all orders are cancelled. This project segments the 30,622 buyers by recency, frequency and spend (RFM), finds where sales are leaking, and sizes a win-back campaign with adjustable assumptions. The main finding: about 1,800 high-spending customers have gone quiet and hold 17.3% of all buyer revenue, so they are the best group to test a win-back offer on first.
 
 > **Data note:** the dataset is synthetic (Kaggle). Several columns behave like random noise (for example complaints and discount usage do not differ by segment), and every customer who ordered has at least one cancellation. The findings show the method and the kind of decisions it supports, not real market facts.
+
+> **Logo note:** the Amazon logo appears in the dashboard for visual appeal only. This project does not use Amazon data and is not affiliated with or endorsed by Amazon. The data comes from the synthetic Kaggle dataset listed below.
 
 ## Business questions
 
@@ -16,18 +20,32 @@ An online store has 100,000 registered customers, but only 30.6% have ever bough
 
 ## Dashboard
 
+The Power BI report has four pages: a Home page with navigation, and three analysis pages that follow one story (who matters, where sales leak, what to do first). The file is at [`dashboard/retention_dashboard.pbix`](dashboard/retention_dashboard.pbix).
+
 | Page | Question | Headline |
 |---|---|---|
-| 1. The big picture | Who are our customers? | Only 3 in 10 sign-ups buy; 1,772 big spenders have gone quiet |
+| Home | Where do I start? | Landing page with navigation to each analysis page |
+| 1. The big picture | Who are our customers? | Only 3 in 10 people who sign up ever buy, and 1,772 big spenders have gone quiet |
 | 2. Where we lose sales | Where is the leak? | 20,128 people tried to buy and every order was cancelled |
-| 3. What to do first | Does a campaign pay off? | Start small, test it, scale only past the break-even |
+| 3. What to do first | Does a campaign pay off? | Start small: win back the 1,772 big spenders who went quiet, and test it before scaling |
 
-<!-- Add screenshots to /images and keep these filenames, or edit the paths -->
-![Page 1 - The big picture](images/page1_big_picture.png)
-![Page 2 - Where we lose sales](images/page2_where_we_lose_sales.png)
-![Page 3 - What to do first](images/page3_what_to_do_first.png)
+### 1. The big picture
 
-The Power BI file is in [`dashboard/retention_dashboard.pbix`](dashboard/retention_dashboard.pbix). Page 3 has sliders for cost per contact, margin and win-back rate, so a reader can test their own assumptions.
+![The big picture](screenshots/The_Big_Picture.png)
+
+Four KPI cards (100K sign-ups, 31K buyers, 1,772 big spenders to target, $11.1M total sales), a funnel from sign-up to repeat purchase (100K, 31K, 18K), a bubble chart placing the six customer groups by days since last purchase and average spend, and a bar chart comparing each group's share of customers with its share of sales. A takeaway strip at the bottom sums up the page.
+
+### 2. Where we lose sales
+
+![Where we lose sales](screenshots/Where_we_lose_sales.png)
+
+KPI cards for orders placed (143K), cancelled orders (64K), cancel rate (44.62%) and customers whose orders were all cancelled (20K). Charts show that the cancel rate is about 44% in every product category, that sign-up channel does not change who buys, and that the 69,378 non-buyers fall into four groups of different warmth.
+
+### 3. What to do first
+
+![What to do first](screenshots/What_to_do.png)
+
+Sliders for margin, cost per contact and win-back rate let a reader test their own assumptions. The page shows the campaign cost, the win-back rate needed to break even, and the return at the chosen settings. One chart compares cost with possible return for three target groups, a line chart shows where the campaign starts paying off, and a verdict card flips between "Pays for itself" and "Loses money". The screenshot shows example slider settings (25% margin, $7.50 per contact, 20% win-back); the figures quoted in this README use $5 per contact and a 30% margin.
 
 ## Key findings
 
@@ -44,7 +62,7 @@ The Power BI file is in [`dashboard/retention_dashboard.pbix`](dashboard/retenti
 | Lost | 4,882 | 15.9% | 5.6% | 50 | 1.0 | $127 |
 | Needs Attention | 2,449 | 8.0% | 2.8% | 16 | 1.0 | $126 |
 
-Total buyer revenue is $11.1M. The At-Risk segment is the biggest by revenue, ahead of Champions.
+Total buyer revenue is $11.1M. The At-Risk segment is the biggest by revenue, ahead of Champions. In the dashboard these groups carry plain-English names: Best customers (Champions), Loyal regulars, New and promising, One-time cooling off (Needs Attention), Slipping away (At-Risk) and One-time gone quiet (Lost).
 
 **3. Half of the At-Risk revenue sits with about 1,800 customers.** K-means (K=4) on log-scaled R/F/M put 1,772 At-Risk customers in the highest-value cluster. They hold **$1.92M of historical spend, 17.3% of all buyer revenue** (about half of the At-Risk segment's revenue), and average about $1,086 each.
 
@@ -67,8 +85,8 @@ Total buyer revenue is $11.1M. The At-Risk segment is the biggest by revenue, ah
    - 95% confidence intervals for mean spend per segment (descriptive only).
 4. **K-means check (`04_kmeans.py`).** The clusters broadly reproduce the value tiers of the rules (Lost and Needs Attention fall 100% in the low-value cluster) but weight spend and frequency more than recency, which surfaced the 1,772 quiet high spenders.
 5. **Business signal and decisions (`05_business_signal.py`, `06_decisions.py`).** Conversion by channel, device, category, payment method and continent; cancellation analysis; non-buyer tiers; campaign break-even.
-6. **Dashboard prep (`07_rfm_output.py`).** Exports a slim, 20-column file for Power BI with segment, cluster, non-buyer tier and campaign target flags.
-7. **Power BI.** Three pages, DAX measures, and What-If parameters for cost per contact, margin and win-back rate.
+6. **Dashboard prep (`07_rfm_output.py`).** Exports a slim file for Power BI with segment, cluster, non-buyer tier and campaign target flags.
+7. **Power BI.** Four pages (a home page plus three analysis pages), DAX measures, and What-If parameters for cost per contact, margin and win-back rate.
 
 ## Recommendations
 
@@ -84,7 +102,7 @@ The actual win-back rate cannot be known from this data, which is why the recomm
 ## Repository structure
 
 ```
-customer-retention-rfm/
+Customer-Retention-Analysis/
 ├── scripts/
 │   ├── 01_eda.py
 │   ├── 02_rfm.py
@@ -95,10 +113,11 @@ customer-retention-rfm/
 │   └── 07_rfm_output.py
 ├── dashboard/
 │   └── retention_dashboard.pbix
-├── images/
-│   ├── page1_big_picture.png
-│   ├── page2_where_we_lose_sales.png
-│   └── page3_what_to_do_first.png
+├── screenshots/
+│   ├── Home.png
+│   ├── The_Big_Picture.png
+│   ├── Where_we_lose_sales.png
+│   └── What_to_do.png
 ├── data/  (campaign_targets.csv, rfm_powerbi.csv)
 └── README.md
 ```
@@ -127,4 +146,4 @@ customer-retention-rfm/
 ## Author
 
 **Samyak Prabhulkar**, aspiring data analyst, Mumbai.
-[LinkedIn](www.linkedin.com/in/samyak-prabhulkar-353363210) | [GitHub](https://github.com/samyakkk11/Customer-Retention-Analysis.git)
+[LinkedIn](https://www.linkedin.com/in/samyak-prabhulkar-353363210/) | [GitHub](https://github.com/samyakkk11)
